@@ -1,29 +1,13 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const fs = require("fs");
-
+const express = require('express');
+const bodyParser = require('body-parser');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
-// Test base
-app.get("/", (req, res) => {
-  res.send("✅ MCP Server attivo");
+app.get('/', (req, res) => {
+  res.send('MCP Server is running!');
 });
-
-// Crea file
-app.post("/crea-file", (req, res) => {
-  const { nome, contenuto } = req.body;
-  const path = `${nome}.txt`;
-  fs.writeFile(path, contenuto, (err) => {
-    if (err) return res.status(500).send({ errore: err });
-    res.send({ messaggio: "📄 File creato con successo", path });
-  });
-});
-
-// Genera report (mock)
-app.use(bodyParser.json());
 
 app.post('/genera-report', (req, res) => {
   try {
@@ -40,5 +24,7 @@ app.post('/genera-report', (req, res) => {
     res.status(500).send({ error: "Errore interno nel server.", details: error.message });
   }
 });
-log(`🚀 Server MCP in ascolto su porta ${port}`);
+
+app.listen(port, () => {
+  console.log(`Server MCP attivo sulla porta ${port}`);
 });
