@@ -23,15 +23,22 @@ app.post("/crea-file", (req, res) => {
 });
 
 // Genera report (mock)
-app.post("/genera-report", (req, res) => {
-  const { dati } = req.body;
-  const risposta = {
-    messaggio: "📊 Report generato",
-    riepilogo: dati.map((item, i) => `${i + 1}. ${item}`).join("\n"),
-  };
-  res.send(risposta);
-});
+app.use(bodyParser.json());
 
-app.listen(port, () => {
-  console.log(`🚀 Server MCP in ascolto su porta ${port}`);
+app.post('/genera-report', (req, res) => {
+  try {
+    const { dati } = req.body;
+    if (!Array.isArray(dati)) {
+      return res.status(400).send({ error: "Il campo 'dati' deve essere un array." });
+    }
+    const risposta = {
+      messaggio: '📄 Report generato',
+      riepilogo: dati.map((item, i) => `${i + 1}. ${item}`).join('\n')
+    };
+    res.send(risposta);
+  } catch (error) {
+    res.status(500).send({ error: "Errore interno nel server.", details: error.message });
+  }
+});
+log(`🚀 Server MCP in ascolto su porta ${port}`);
 });
